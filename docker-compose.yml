@@ -9,7 +9,7 @@ services:
     ports:
       - "54321:5432"
     volumes:
-      - /home/syphi/PycharmProjects/postgres-data:/var/lib/postgresql/data
+      - ./postgres-data:/var/lib/postgresql/data
     networks:
       - docker-network
 
@@ -22,6 +22,7 @@ services:
       bash -c "
       alembic -c /app/src/alembic.ini upgrade head
       && python3 -m src.scripts.upload_script
+      && python3 -m pytest
       && python3 -m src.app.app_flask"
     depends_on:
       - database
