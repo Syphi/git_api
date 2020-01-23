@@ -1,0 +1,35 @@
+version: '3.5'
+
+services:
+
+  database:
+    image: "postgres:12"
+    env_file:
+      - database.env
+    ports:
+      - "54321:5432"
+    volumes:
+      - /home/syphi/PycharmProjects/postgres-data:/var/lib/postgresql/data
+    networks:
+      - docker-network
+
+  web_serrvice:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app/
+    command: >
+      bash -c "
+      alembic -c /app/src/alembic.ini upgrade head
+      && python3 -m src.scripts.upload_script
+      && python3 -m src.app.app_flask"
+    depends_on:
+      - database
+    ports:
+      - "5700:5700"
+    networks:
+      - docker-network
+
+networks:
+  docker-network:
+    name: git-net
