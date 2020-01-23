@@ -26,11 +26,13 @@ def is_int(s):
     except ValueError:
         abort(400, description=f"Page need to be represent as int")
 
-def get_int_value(value):
-    result = is_int(request.args.get(value, ITEMS_PER_PAGE))
+
+def get_int_value(value, default_value):
+    result = is_int(request.args.get(value, default_value))
     if result < 1:
         abort(400, description=f"{value} to be grater that 0.")
     return result
+
 
 @search_page.route('/', methods=['GET'])
 def show():
@@ -43,8 +45,8 @@ def show():
     sort_condition = sort_field.desc() if sort_order == 'desc' else sort_field.asc()
 
     # Pagination
-    page_number = get_int_value("page")
-    page_limit = get_int_value("page_limit")
+    page_number = get_int_value("page", DEFAULT_PAGE)
+    page_limit = get_int_value("page_limit", ITEMS_PER_PAGE)
 
     result = GitInfo.query.order_by(sort_condition)\
         .paginate(page_number, page_limit, error_out=False)

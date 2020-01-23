@@ -1,4 +1,4 @@
-from . import app
+from . import app, db
 from ..view import *
 
 app.register_blueprint(search_page)
