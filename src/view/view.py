@@ -19,7 +19,7 @@ def marshal(git_info_instance: GitInfo) -> dict:
     }
 
 
-def is_int(s):
+def is_int(s: str) -> int:
     """ Check to convert in int """
     try:
         return int(s)
@@ -27,7 +27,7 @@ def is_int(s):
         abort(400, description=f"Page need to be represent as int")
 
 
-def get_int_value(value, default_value):
+def get_int_value(value: str, default_value: str or int) -> int:
     result = is_int(request.args.get(value, default_value))
     if result < 1:
         abort(400, description=f"{value} to be grater that 0.")
@@ -50,7 +50,6 @@ def show():
 
     result = GitInfo.query.order_by(sort_condition)\
         .paginate(page_number, page_limit, error_out=False)
-
     # Other method to do this with .offset(start).limit(limit)
 
     return jsonify({
